@@ -18,6 +18,30 @@
     "./summarize": "./src/summarize.js",
     "./output": "./src/output.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_ORG/har-filter.git"
+  },
+  "keywords": [
+    "har",
+    "http-archive",
+    "privacy",
+    "redaction",
+    "hipaa",
+    "drfirst",
+    "cli",
+    "node",
+    "phi",
+    "filtering",
+    "network-analysis",
+    "security"
+  ],
+  "author": "Claude Code <noreply@anthropic.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/YOUR_ORG/har-filter#readme",
+  "bugs": {
+    "url": "https://github.com/YOUR_ORG/har-filter/issues"
+  },
   "scripts": {
     "test": "node --test test/*.test.js",
     "test:watch": "node --test --watch test/*.test.js"
