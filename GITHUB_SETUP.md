@@ -15,7 +15,7 @@ Create a new **public** repository on GitHub:
 - **Add .gitignore:** NO (we have our own)
 - **Add LICENSE:** Choose MIT (recommended for open-source CLI tools)
 
-**URL:** `https://github.com/YOUR_ORG/har-filter`
+**URL:** `https://github.com/DrFirst-com/har-filter`
 
 ### 2. Update Package.json
 

@@ -1,12 +1,61 @@
+# Dependencies
 node_modules/
+npm-shrinkwrap.json
 .npm
-*.log
-npm-debug.log*
-dist/
-build/
-.DS_Store
+
+# IDE / Editor
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment variables (but track .env.example)
 .env
 .env.local
+.env.*.local
+
+# OS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# HAR files - production (for safety, but allow test fixtures)
+*.har
+!test/fixtures/*.har
+!test/fixtures/**/*.har
+
+# Config file for future use (optional, per-user)
+.har-filterrc
+.har-filterrc.json
+
+# Temporary test outputs
+/tmp/
+/temp/
+/test/output/
+/test/fixtures/output/
+
+# Performance profiling
+*.prof
+*.trace
+flamegraph.html
+
+# Coverage reports (if added in future)
+coverage/
+.nyc_output/

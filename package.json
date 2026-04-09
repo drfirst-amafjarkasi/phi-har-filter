@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_ORG/har-filter.git"
+    "url": "https://github.com/DrFirst-com/har-filter.git"
   },
   "keywords": [
     "har",
@@ -36,15 +36,19 @@
     "network-analysis",
     "security"
   ],
-  "author": "Claude Code <noreply@anthropic.com>",
+  "author": "DrFirst <engineering@drfirst.com>",
   "license": "MIT",
-  "homepage": "https://github.com/YOUR_ORG/har-filter#readme",
+  "homepage": "https://github.com/DrFirst-com/har-filter#readme",
   "bugs": {
-    "url": "https://github.com/YOUR_ORG/har-filter/issues"
+    "url": "https://github.com/DrFirst-com/har-filter/issues"
   },
   "scripts": {
     "test": "node --test test/*.test.js",
-    "test:watch": "node --test --watch test/*.test.js"
+    "test:watch": "node --test --watch test/*.test.js",
+    "test:verbose": "node --test --reporter=tap test/*.test.js",
+    "lint": "echo 'Linting disabled - use eslint manually if desired'",
+    "start": "node bin/har-filter.js",
+    "help": "node bin/har-filter.js --help"
   },
   "dependencies": {
     "chalk": "^5.3.0",

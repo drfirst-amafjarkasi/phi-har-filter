@@ -24,6 +24,7 @@ const program = new Command();
 
 function fatal(message, code = 1) {
   process.stderr.write(`${chalk.red('✗ Error')}: ${message}\n`);
+  process.stderr.write(`${chalk.gray('Run with --help for usage information')}\n`);
   process.exit(code);
 }
 
@@ -106,7 +107,9 @@ async function extractHarMetadata(filePath) {
       });
     });
 
-    logStream.on('error', reject);
+    logStream.on('error', (err) => {
+      reject(new Error(`Failed to extract HAR metadata: ${err.message}`));
+    });
   });
 }
 
@@ -212,7 +215,9 @@ async function filterPass(
       });
     });
 
-    entryStream.on('error', reject);
+    entryStream.on('error', (err) => {
+      reject(new Error(`Stream error during filter pass: ${err.message}`));
+    });
   });
 }
 
@@ -273,7 +278,9 @@ async function outputPass(
       resolve({ entries: entries, redactionReports });
     });
 
-    entryStream.on('error', reject);
+    entryStream.on('error', (err) => {
+      reject(new Error(`Stream error during output pass: ${err.message}`));
+    });
   });
 }
 
@@ -369,14 +376,40 @@ async function main() {
         const excludes = Array.isArray(opts.exclude) ? opts.exclude : opts.exclude ? [opts.exclude] : [];
         excludeList = excludeList.concat(excludes);
 
-        // Parse filter options
+        // Parse and validate filter options
         const statusFilter = opts.status ? parseStatusFilter(opts.status) : null;
+
+        // Validate methods (basic check for common HTTP methods)
+        const validMethods = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS', 'CONNECT', 'TRACE']);
         const allowedMethods = opts.methods
           ? new Set(opts.methods.split(',').map((m) => m.trim().toUpperCase()))
           : null;
+        if (allowedMethods && allowedMethods.size > 0) {
+          const invalidMethods = Array.from(allowedMethods).filter(m => !validMethods.has(m));
+          if (invalidMethods.length > 0) {
+            process.stderr.write(
+              `${chalk.yellow('⚠ Warning')}: Unknown HTTP methods: ${invalidMethods.join(', ')}\n` +
+              `       Continuing anyway (may match nothing)\n`
+            );
+          }
+        }
+
+        const validResourceTypes = new Set([
+          'fetch', 'xhr', 'document', 'stylesheet', 'script', 'image',
+          'font', 'media', 'manifest', 'websocket', 'ping', 'other'
+        ]);
         const allowedResourceTypes = opts.resourceTypes
           ? new Set(opts.resourceTypes.split(',').map((t) => t.trim().toLowerCase()))
           : null;
+        if (allowedResourceTypes && allowedResourceTypes.size > 0) {
+          const invalidTypes = Array.from(allowedResourceTypes).filter(t => !validResourceTypes.has(t));
+          if (invalidTypes.length > 0) {
+            process.stderr.write(
+              `${chalk.yellow('⚠ Warning')}: Unknown resource types: ${invalidTypes.join(', ')}\n` +
+              `       Valid: ${Array.from(validResourceTypes).join(', ')}\n`
+            );
+          }
+        }
 
         let timeAfterMs = null;
         let timeBeforeMs = null;
@@ -385,7 +418,8 @@ async function main() {
           if (isNaN(timeAfterMs)) {
             fatal(
               `Invalid time-after format: ${opts.timeAfter}\n` +
-              `       Expected ISO 8601 (e.g., 2026-04-09T12:00:00Z)`
+              `       Expected ISO 8601 (e.g., 2026-04-09T12:00:00Z)\n` +
+              `       Examples: 2026-04-09T12:00:00Z, 2026-04-09T12:00:00+00:00`
             );
           }
         }
@@ -394,9 +428,39 @@ async function main() {
           if (isNaN(timeBeforeMs)) {
             fatal(
               `Invalid time-before format: ${opts.timeBefore}\n` +
-              `       Expected ISO 8601 (e.g., 2026-04-09T12:00:00Z)`
+              `       Expected ISO 8601 (e.g., 2026-04-09T12:00:00Z)\n` +
+              `       Examples: 2026-04-09T12:00:00Z, 2026-04-09T12:00:00+00:00`
             );
           }
+        }
+
+        // Validate time range logic
+        if (timeAfterMs !== null && timeBeforeMs !== null && timeAfterMs > timeBeforeMs) {
+          fatal(
+            `Invalid time range: --time-after is after --time-before\n` +
+            `       After: ${opts.timeAfter}\n` +
+            `       Before: ${opts.timeBefore}`
+          );
+        }
+
+        // Validate option combinations
+        if (opts.firstPartyStrict && !opts.firstPartyOnly) {
+          fatal(
+            `Invalid option combination: --first-party-strict requires --first-party-only\n` +
+            `       Use: --first-party-only --first-party-strict`
+          );
+        }
+
+        if (opts.keepUserAgent && opts.redact !== 'hipaa') {
+          process.stderr.write(
+            `${chalk.yellow('⚠ Warning')}: --keep-user-agent only affects HIPAA mode. Current: --redact ${opts.redact}\n`
+          );
+        }
+
+        if (opts.keepBodies && opts.redact !== 'hipaa') {
+          process.stderr.write(
+            `${chalk.yellow('⚠ Warning')}: --keep-bodies only affects HIPAA mode. Current: --redact ${opts.redact}\n`
+          );
         }
 
         const filterOpts = {
@@ -412,8 +476,18 @@ async function main() {
           keepRedirects: opts.keepRedirects || false,
         };
 
+        // Validate redaction level
+        const validRedactLevels = new Set(['none', 'basic', 'hipaa', 'strict']);
+        const redactLevel = opts.redact || 'hipaa';
+        if (!validRedactLevels.has(redactLevel)) {
+          fatal(
+            `Invalid redaction level: ${redactLevel}\n` +
+            `       Valid levels: none, basic, hipaa (default), strict`
+          );
+        }
+
         const redactOpts = {
-          redactLevel: opts.redact || 'hipaa',
+          redactLevel,
           redactProviderPii: opts.redactProviderPii || false,
           dryRun: opts.dryRunRedaction || false,
           keepUserAgent: opts.keepUserAgent || false,
