@@ -19,7 +19,7 @@ Thank you for interest in contributing to `har-filter`! This document provides g
    ```bash
    git clone https://github.com/YOUR_USERNAME/har-filter.git
    cd har-filter
-   git remote add upstream https://github.com/drfirst-amafjarkasi/har-filter.git
+   git remote add upstream https://github.com/drfirst-amafjarkasi/phi-har-filter.git
    ```
 
 3. **Install dependencies**

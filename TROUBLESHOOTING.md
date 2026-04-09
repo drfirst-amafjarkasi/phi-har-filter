@@ -573,7 +573,7 @@ node --test test/redact.test.js
 1. **Check the README**: [README.md](README.md) - comprehensive guide with examples
 2. **Check ARCHITECTURE**: [ARCHITECTURE.md](ARCHITECTURE.md) - design details
 3. **Review test files**: `test/*.test.js` - actual usage examples
-4. **Open an issue**: [GitHub Issues](https://github.com/drfirst-amafjarkasi/har-filter/issues)
+4. **Open an issue**: [GitHub Issues](https://github.com/drfirst-amafjarkasi/phi-har-filter/issues)
    - Include error message
    - Minimal reproducible example
    - Environment (Node version, OS)

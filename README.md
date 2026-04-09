@@ -1,4 +1,4 @@
-# har-filter
+# phi-phi-har-filter
 
 A production-grade Node.js CLI tool for filtering HAR (HTTP Archive) files to DrFirst-owned domains and applying HIPAA-oriented privacy redaction focused on **patient PHI** (not prescriber/provider identifiers).
 
@@ -23,21 +23,21 @@ A production-grade Node.js CLI tool for filtering HAR (HTTP Archive) files to Dr
 ## Installation
 
 ```bash
-npm install --save-dev har-filter
+npm install --save-dev phi-phi-har-filter
 # Or install globally
-npm install -g har-filter
+npm install -g phi-phi-har-filter
 ```
 
 Then run:
 
 ```bash
-har-filter --in input.har --out ./output/
+phi-phi-har-filter --in input.har --out ./output/
 ```
 
 Or with npx:
 
 ```bash
-npx har-filter --in input.har --out ./output/
+npx phi-phi-har-filter --in input.har --out ./output/
 ```
 
 ## Quick Start
@@ -45,7 +45,7 @@ npx har-filter --in input.har --out ./output/
 ### Basic filtering (default: DrFirst domains + HIPAA redaction)
 
 ```bash
-har-filter --in traffic.har --out ./out/
+phi-phi-har-filter --in traffic.har --out ./out/
 ```
 
 Creates:
@@ -60,7 +60,7 @@ Output displays:
 ### Keep provider details, redact only patient PHI
 
 ```bash
-har-filter --in traffic.har --out ./out/ \
+phi-har-filter --in traffic.har --out ./out/ \
   --redact hipaa \
   # NPI, DEA, prescriber names NOT redacted by default ✓
 ```
@@ -68,7 +68,7 @@ har-filter --in traffic.har --out ./out/ \
 ### Strict mode: redact everything including provider PII
 
 ```bash
-har-filter --in traffic.har --out ./out/ \
+phi-har-filter --in traffic.har --out ./out/ \
   --redact strict \
   --redact-provider-pii
 ```
@@ -76,7 +76,7 @@ har-filter --in traffic.har --out ./out/ \
 ### Preserve redirect chains
 
 ```bash
-har-filter --in traffic.har --out ./out/ \
+phi-har-filter --in traffic.har --out ./out/ \
   --keep-redirects \
   --redirect-depth 5
 ```
@@ -84,7 +84,7 @@ har-filter --in traffic.har --out ./out/ \
 ### Filter by status codes and output grouped summary with gzip compression
 
 ```bash
-har-filter --in traffic.har --out ./out/ \
+phi-har-filter --in traffic.har --out ./out/ \
   --status 400+ \
   --extract-errors \
   --group-by domain \
@@ -95,7 +95,7 @@ har-filter --in traffic.har --out ./out/ \
 ### View sample of redacted entries before writing files
 
 ```bash
-har-filter --in traffic.har --dry-run-sample 10
+phi-har-filter --in traffic.har --dry-run-sample 10
 # Shows first 10 entries with redaction details, exits without writing files
 ```
 
@@ -103,22 +103,22 @@ har-filter --in traffic.har --dry-run-sample 10
 
 ```bash
 # Pretty table (default)
-har-filter --in traffic.har --out ./out/ --format table
+phi-har-filter --in traffic.har --out ./out/ --format table
 
 # YAML format
-har-filter --in traffic.har --out ./out/ --format yaml
+phi-har-filter --in traffic.har --out ./out/ --format yaml
 
 # CSV for Excel
-har-filter --in traffic.har --out ./out/ --format csv
+phi-har-filter --in traffic.har --out ./out/ --format csv
 
 # Tree view
-har-filter --in traffic.har --out ./out/ --format tree
+phi-har-filter --in traffic.har --out ./out/ --format tree
 ```
 
 ### First-party only (entries initiated from DrFirst contexts)
 
 ```bash
-har-filter --in traffic.har --out ./out/ \
+phi-har-filter --in traffic.har --out ./out/ \
   --first-party-only \
   --first-party-strict  # drop if initiator is unknown
 ```
@@ -127,7 +127,7 @@ har-filter --in traffic.har --out ./out/ \
 
 ### NPI and Provider Identifiers
 
-**NPI (National Provider Identifier) is NOT patient PHI.** It is a public prescriber identifier. By default, `har-filter` does NOT redact:
+**NPI (National Provider Identifier) is NOT patient PHI.** It is a public prescriber identifier. By default, `phi-har-filter` does NOT redact:
 
 - NPI
 - DEA number
@@ -364,7 +364,7 @@ To use a custom domain file:
 ```
 
 ```bash
-har-filter --in traffic.har --out ./out/ --domains ./domains.json
+phi-har-filter --in traffic.har --out ./out/ --domains ./domains.json
 ```
 
 Or as newline-delimited text with comments:
@@ -428,7 +428,7 @@ Runs node:test suite covering:
 ### Export sensitive logs but keep provider context
 
 ```bash
-har-filter --in debug.har --out ./safe/ \
+phi-har-filter --in debug.har --out ./safe/ \
   --redact hipaa \
   --group-by domain
 ```
@@ -438,7 +438,7 @@ Output: Patient identifiers redacted, NPI intact, grouped by domain for easy rev
 ### Audit: track all dropped entries
 
 ```bash
-har-filter --in traffic.har --out ./audit/ \
+phi-har-filter --in traffic.har --out ./audit/ \
   --mode entries,grouped,summary,decisions \
   --extract-errors
 ```
@@ -448,8 +448,8 @@ Output: `decisions.*.json` shows why each entry was dropped.
 ### Compare two HAR filters
 
 ```bash
-har-filter --in v1.har --out ./out/ --name v1
-har-filter --in v2.har --out ./out/ --name v2
+phi-har-filter --in v1.har --out ./out/ --name v1
+phi-har-filter --in v2.har --out ./out/ --name v2
 # Then diff the summary files
 diff out/v1.summary.*.json out/v2.summary.*.json
 ```
