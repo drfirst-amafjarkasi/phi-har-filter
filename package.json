@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DrFirst-com/har-filter.git"
+    "url": "https://github.com/drfirst-amafjarkasi/har-filter.git"
   },
   "keywords": [
     "har",
@@ -38,9 +38,9 @@
   ],
   "author": "DrFirst <engineering@drfirst.com>",
   "license": "MIT",
-  "homepage": "https://github.com/DrFirst-com/har-filter#readme",
+  "homepage": "https://github.com/drfirst-amafjarkasi/har-filter#readme",
   "bugs": {
-    "url": "https://github.com/DrFirst-com/har-filter/issues"
+    "url": "https://github.com/drfirst-amafjarkasi/har-filter/issues"
   },
   "scripts": {
     "test": "node --test test/*.test.js",

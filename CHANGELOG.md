@@ -114,5 +114,5 @@ MIT - See [LICENSE](LICENSE) for full text.
 ---
 
 **Release Date:** 2026-04-09  
-**Repository:** https://github.com/DrFirst-com/har-filter  
+**Repository:** https://github.com/drfirst-amafjarkasi/har-filter  
 **NPM Package:** https://www.npmjs.com/package/har-filter
